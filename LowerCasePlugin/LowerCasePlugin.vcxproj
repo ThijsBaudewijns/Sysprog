@@ -132,8 +132,8 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>if not exist "$(SolutionDir)$(Configuration)\plugins\" mkdir "$(SolutionDir)$(Configuration)\plugins\"
-copy "$(TargetPath)" "$(SolutionDir)$(Configuration)\plugins\$(TargetName)$(TargetExt)"</Command>
+      <Command>if not exist "$(OutDir)plugins\" mkdir "$(OutDir)plugins\"
+copy "$(TargetPath)" "$(OutDir)plugins\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

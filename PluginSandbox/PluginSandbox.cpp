@@ -4,6 +4,14 @@
 #include <filesystem>
 #include <windows.h>
 
+// Get the directory where this executable is located
+std::string get_executable_directory() {
+    char buffer[MAX_PATH];
+    GetModuleFileNameA(NULL, buffer, MAX_PATH);
+    std::string::size_type pos = std::string(buffer).find_last_of("\\/");
+    return std::string(buffer).substr(0, pos);
+}
+
 // Scan directory for plugin files
 std::vector<std::string> scan_plugins(const std::string& path) {
     std::vector<std::string> plugins;
@@ -94,21 +102,28 @@ int main(int argc, char* argv[]) {
     std::cout << "=== Plugin Sandbox Tester ===\n";
     std::cout << "This program tests plugins in a separate process for safety.\n\n";
 
-    // Path to the PluginTester executable
-    std::string tester_path = "PluginTester.exe";
+    // Get the directory where this executable is located
+    std::string exe_dir = get_executable_directory();
+    std::cout << "Executable directory: " << exe_dir << "\n\n";
+
+    // Path to the PluginTester executable (same directory as this executable)
+    std::string tester_path = exe_dir + "\\PluginTester.exe";
 
     // Check if PluginTester exists
     if (!std::filesystem::exists(tester_path)) {
-        std::cerr << "Error: PluginTester.exe not found in current directory.\n";
+        std::cerr << "Error: PluginTester.exe not found at: " << tester_path << "\n";
         std::cerr << "Please ensure PluginTester.exe is built and in the same directory.\n";
         return 1;
     }
 
-    // Get all plugins
-    std::vector<std::string> plugins = scan_plugins("plugins");
+    std::cout << "Found PluginTester at: " << tester_path << "\n\n";
+
+    // Get all plugins (same directory as executables)
+    std::string plugins_dir = exe_dir + "\\plugins";
+    std::vector<std::string> plugins = scan_plugins(plugins_dir);
 
     if (plugins.empty()) {
-        std::cerr << "No plugins found in 'plugins' directory.\n";
+        std::cerr << "No plugins found in '" << plugins_dir << "' directory.\n";
         return 1;
     }
 
